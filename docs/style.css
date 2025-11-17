@@ -50,7 +50,7 @@ body {
 }
 
 .nav-links a:hover {
-  color: #0055cc;
+  color: #1d71e6;
 }
 
 /* Hero */
@@ -59,7 +59,7 @@ body {
 }
 
 .hero-content {
-  text-align: left;
+  text-align: center;
 }
 
 .tagline {
@@ -95,32 +95,29 @@ body {
 .hero-buttons {
   margin: 20px 0 16px;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
 }
 
 /* Buttons */
 .btn {
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid #d0d0dd;
-  font-size: 0.9rem;
-  text-decoration: none;
-  color: #333;
-  background: white;
-  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
-}
+  padding: 10px 17px;
 
-.btn.primary {
-  background: #0055cc;
-  color: #fff;
-  border-color: #0055cc;
+  border-radius: 4px;
+  border: 1px solid #d0d0dd;
+
+  font-size: 1.2rem;
+  text-decoration: none;
+  color: #f6f7f8;
+  background: rgb(52, 125, 221);
+
+  transition: all 0.2s ease-in-out;
 }
 
 .btn:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 /* Highlight box */
