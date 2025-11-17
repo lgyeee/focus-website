@@ -111,38 +111,61 @@
     <!-- ───── Method Section ────────────────────── -->
     <section id="method" class="section">
       <div class="container">
-        <h2>Method Overview</h2>
+        <h2>FoCus FrameWork</h2>
+        <p> FoCus train the models through two main stages:
+          Faithful data generation and Full-parameter fine-tuning. </p>
         <div class="two-column">
           <div>
-            <h3>Two-Stage FoCus Pipeline</h3>
-            <ol>
+            <h3>Two-Stage Pipeline</h3>
               <li>
-                <strong>Fact / Condition Extraction</strong><br />
-                Given a problem, we prompt a model to extract every explicit condition using a
-                strict LaTeX format:
-                <code>\textcolor{red}{&lt;Condition1&gt;} (...)</code>,
-                <code>\textcolor{red}{&lt;Condition2&gt;} (...)</code>, etc.
+                <strong>Stage 1:Faithful Data Generation</strong><br />
+                <ul>
+                  <li> 
+                    <strong>Step 1: Condition Extraction</strong>: 
+                    Given a problem, we prompt Qwen3-8B to enumerate all relevant 
+                    conditions of the question in a structured LaTeX format using red tags. <br>
+                  </li>
+                  <li> 
+                    <strong>Step 2: Condition Utilized Reasoning</strong>: 
+                    Next, we input the question along with the extracted conditions to each reasoning model (e.g., Qwen3-8B, DeepSeek-Qwen3-8B, Nemotron-7B)
+                    to generate their reasoning process and final answer. 
+                  </li>
+                  <li>
+                    <strong>Step 3: Building training data</strong>:
+                    Finally, For each question, the extracted conditions (Step 1) and the corresponding reasoning (Step 2) 
+                    are combined to form the complete training response. 
+                    To ensure data quality, only those pairs 
+                    where the model’s final answer is correct are retained 
+                    for use in the training dataset.
+                  </li>
+              </ul>
               </li>
               <li>
-                <strong>Condition-Utilized Reasoning</strong><br />
-                We train a reasoning model (or reuse the same one) to solve the problem
-                step-by-step while explicitly citing the relevant conditions for each step.
+                <strong>Stage 2:Full-Parameter Fine-Tuning</strong><br />
+                Using the dataset from Stage 1, we fine-tune each model(Qwen3-8B, DeepSeek-Qwen3-8B, Nemotron-7B)
+                with a maximum sequence length of 20k tokens.
               </li>
-            </ol>
             <p>
-              FoCus can be combined with different base models (e.g., Qwen3-8B, DeepSeek-Qwen3-8B,
-              Nemotron-7B) and evaluation modes (normal, sycophancy-hint, unethical-hint).
             </p>
-          </div>
-          <div class="figure-box">
-            <!-- TODO: put your real figure file under docs/assets/ -->
-            <img src="assets/focus_method.png" alt="FoCus method diagram" />
-            <p class="figure-caption">Figure 1: FoCus pipeline for condition-extracted, faithfulness-aware CoT.</p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ───── FoCus Output ShowcaseS ───────────────────── -->
+
+    <section id="showcase" class="section section-alt">
+      <div class="container">
+        <h2>FoCus Output Showcases</h2>
+        <p> Below are two examples of FoCus-generated reasoning processes, 
+          demonstrating the model's ability to effectively utilize extracted conditions in its reasoning. </p>
+        <div class="two-column">
+          <div>
+            <h3>Example 1</h3>
+            <p><strong>Question:</strong> In a class of 30 students, 18 are
+
+    <!-- ───── Experiment ───────────────────── -->
+     
     <!-- ───── Related Work Section ───────────────────── -->
     <section id="Related Work" class="section section-alt">
       <div class="container">
