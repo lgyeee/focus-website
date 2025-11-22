@@ -182,23 +182,27 @@ h4 {
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* 展開/收合圖標的樣式 */
 .toggle-icon {
     margin-left: 8px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease; /* 旋轉動畫 */
     font-size: 0.9em;
 }
 
+/* 內容區塊樣式 */
 .content-block {
+    /* 內容區塊的視覺效果 */
     margin-top: 10px;
     padding: 15px;
     border: 1px solid #ddd;
-    border-left: 5px solid #dc3545;
-    background-color: #fffaf0;
+    border-left: 5px solid #dc3545; /* 左側突出線 */
+    background-color: #fffaf0; /* 淺色背景 */
     border-radius: 4px;
     font-family: 'Courier New', Courier;
     font-size: 16px;
 }
 
+/* 初始隱藏狀態 */
 .hidden {
     display: none;
 }
