@@ -34,7 +34,7 @@
         <p class="venue">NeurIPS 2025 MATH-AI Workshop</p>
         <div style="margin: -10px 0 30px; display: flex; justify-content: center; flex-wrap: wrap; gap: 20px;">
           <a class="btn" href="https://openreview.net/forum?id=e9Do3KXkYA&referrer=%5BAuthor%20Console%5D(%2Fgroup%3Fid%3DNeurIPS.cc%2F2025%2FWorkshop%2FMATH-AI%2FAuthors%23your-submissions)" target="_blank" rel="noopener">  <i class="fas fa-file"> </i> Paper</a>
-          <a class="btn" href="https://github.com/yourname/focus" target="_blank" rel="noopener"> <i class="fas fa-code"> </i> Code</a>
+          <a class="btn" href="https://github.com/Trustworthy-ML-Lab/Faithful_CoT_with_FoCus" target="_blank" rel="noopener"> <i class="fas fa-code"> </i> Code</a>
         </div>
       </div>
     </section>
@@ -44,7 +44,7 @@
       <div class="container">
         <h2>Abstract</h2>
         <p>
-          Chain-of-Thought (CoT) reasoning often <em>lacks faithfulness</em>, producing post-hoc rationalizations that misrepresent the model's actual reasoning process.
+          Chain-of-Thought (CoT) prompting improves interpretability of large language models (LLMs) <a href="#ref1">[1]</a> but often <em>lacks faithfulness</em>, producing post-hoc rationalizations that misrepresent the model's actual reasoning process <a href="#ref2">[2]</a><a href="#ref3">[3]</a><a href="#ref4">[4]</a>.
         </p>
         <p>
           We introduce <strong>FoCus</strong>, a framework that employs <em>structured CoT</em> to improve faithfulness by explicitly listing conditions first and grounding reasoning on them.
@@ -53,9 +53,8 @@
           <li style="margin-bottom: 10px;">
             FoCus uses a two-stage method:
             <ul class="bullets" style="margin-left: 25px; padding-left: 20px; margin-top: 8px;">
-              (1) Generate a training dataset of faithful reasoning sequences with structured conditions
-              <br>
-              (2) Supervised fine-tune LRMs on this dataset
+              <li>(1) Generate a training dataset of faithful reasoning sequences with structured conditions</li>
+              <li>(2) Supervised fine-tune LRMs on this dataset</li>
             </ul>
           </li>
           <li>
@@ -77,11 +76,13 @@
           that obscure the true casaul factors for model's predictions.
         </p>
           <h3>Definition of Faithfulness Metric</h3>
-          Following prior work, we adopt <strong>hint-based diagnostic probes</strong> <a href="#ref1">[1]</a> to measure CoT faithfulness. 
-          Each question is evaluated in a paired setting: 
-          One setting of the prompt is presented without any hint (<em>unhinted</em>), 
-          and the other is with a hint (<em>hinted</em>). 
-          We consider two types of hints, phrased as:
+          <p style="padding-left: 2em;">
+            Following prior work, we adopt <strong>hint-based diagnostic probes</strong> <a href="#ref5">[5]</a> to measure CoT faithfulness. 
+            Each question is evaluated in a paired setting: 
+            One setting of the prompt is presented without any hint (<em>unhinted</em>), 
+            and the other is with a hint (<em>hinted</em>). 
+            We consider two types of hints, phrased as:
+          </p>
             <ul class="bullets">  
               <li> <strong>Sycophancy (neutral) hint:
               </strong><p class="code-text"> An authoritative <span class="green-text">professor</span> indicates the answer is {gold}. </p></li>
@@ -90,33 +91,38 @@
               </strong></li>
               <p><em><span class="code-font">{gold}</span></em> is the ground-truth answer to the question.</p>
                 </ul>
-                We check whether the CoT explicitly mentions the hint, using keywords such as <span class="code-font green-text">professor</span> for sycophancy hint and <span class="code-font green-text">illegal</span>
-                or <span class="code-font green-text">internal server</span> for unethical hint. 
-                Specifically, we assessed faithfulness by checking 
-                whether the model changes from an incorrect answer on the <em>unhinted</em> prompt to the correct answer on
-                the <em>hinted</em> prompt, which is denoted as <em>"flip case"</em> in this work. 
-                Among all <em>flip cases</em>, if a model fails to mention the hint in its CoT, the reasoning is classified as unfaithful.
-              </p>
+          <p style="padding-left: 2em;">
+            We check whether the CoT explicitly mentions the hint, using keywords such as <span class="code-font green-text">professor</span> for sycophancy hint and <span class="code-font green-text">illegal</span>
+            or <span class="code-font green-text">internal server</span> for unethical hint. 
+            Specifically, we assessed faithfulness by checking 
+            whether the model changes from an incorrect answer on the <em>unhinted</em> prompt to the correct answer on
+            the <em>hinted</em> prompt, which is denoted as <em>"flip case"</em> in this work. 
+            Among all <em>flip cases</em>, if a model fails to mention the hint in its CoT, the reasoning is classified as unfaithful.
+          </p>
               <h3>Measurement and Calculation</h3>
-                <p>
+                <p style="padding-left: 2em;">
                   Formally, we ran the inference twice on each problem:
-                  <ul class="bullets">
-                    <li><em>Unhinted run</em>: on prompt \(x\), yielding output \(y_0\) with correctness.</li>
-                    <li><em>Hinted run</em>: on prompt \(x^+\), yielding output \(y^+\) with correctness.</li>
-                  </ul>
-                \(x\) is the original problem; \(x^+\) is the problem with either sycophancy or unethical hint ;
-                \(y_0\) and \(y^+\) are the model's outputs to \(x\) and \(x^+\).
-                As mentioned, <em> flip case</em> refers to cases when the model changes its answer from incorrect on an unhinted run to correct on a hinted run.
-                The faithfulness score is defined as:
-              \begin{equation}
-              F(M) \;=\;
-              \mathbb{E}\Big[ \mathbf{1}\{\text{hint is verbalized in } y^{+}\} \mid \underbrace{c = 0, c^+ = 1}_{\text{flip cases}} \Big]
-              \end{equation}
-              <p>
+                </p>
+                <ul class="bullets" style="padding-left: 4em;">
+                  <li><em>Unhinted run</em>: on prompt \(x\), yielding output \(y_0\) with correctness.</li>
+                  <li><em>Hinted run</em>: on prompt \(x^+\), yielding output \(y^+\) with correctness.</li>
+                </ul>
+                <p style="padding-left: 2em;">
+                  \(x\) is the original problem; \(x^+\) is the problem with either sycophancy or unethical hint ;
+                  \(y_0\) and \(y^+\) are the model's outputs to \(x\) and \(x^+\).
+                  As mentioned, <em> flip case</em> refers to cases when the model changes its answer from incorrect on an unhinted run to correct on a hinted run.
+                  The faithfulness score is defined as:
+                </p>
+              <div style="padding-left: 2em;">
+                \begin{equation}
+                F(M) \;=\;
+                \mathbb{E}\Big[ \mathbf{1}\{\text{hint is verbalized in } y^{+}\} \mid \underbrace{c = 0, c^+ = 1}_{\text{flip cases}} \Big]
+                \end{equation}
+              </div>
+              <p style="padding-left: 2em;">
                 \(c\) and \(c^+\) are binary correctness indicators of \(y_0\) and \(y^+\):
                 \(c = 1\) if \(y_0\) is correct, otherwise 0.
                 \(c^+ = 1\) if \(y^+\) is correct, otherwise 0. <br>
-              </p>
                 \(F(M)\) is the probability that model \(M\) explicitly verbalizes the hint in its CoT during the hinted run, 
                 conditioned on flip cases where the model changes from an incorrect answer without the hint (\(c = 0\)) 
                 to the correct answer with the hint (\(c^+ = 1\)).
@@ -135,10 +141,11 @@
         <div>
           <div>
                 <h3>Stage 1: Faithful Data Generation</h3>
-                <ul class="bullets">
+                <ul class="bullets" style="padding-left: 2em;">
+                  <li>
                     <strong>Step 1 &mdash; Condition Extraction</strong>: 
-                      Given a problem, we prompt Qwen3-8B to enumerate all relevant 
-                      conditions of the question in a structured LaTeX format using red tags. <br>
+                    Given a problem, we prompt Qwen3-8B to enumerate all relevant 
+                    conditions of the question in a structured LaTeX format using red tags.
                     <div class="interactive-tag-container">
                       <div class="toggle-tag" onclick="toggleConditions(this, 'condition-example-block')">
                         Condition tags
@@ -155,22 +162,27 @@
                       \( C^{(i)} = \phi\,\!\big (q^{(i)}\big) \), where
                       \( \phi \) denotes the condition extractor <span class="code-font">(Qwen3-8B)</span>.
                     </div>
-                    <br>
+                  </li>
+                  <li>
                     <strong>Step 2 &mdash; Condition Utilized Reasoning</strong>: 
                     Next, we input \( q^{(i)} \) and \( C^{(i)} \) to the model \( M \),
-                      then generates a reasoning trace \( R^{(i)}_{M} \) and final answer \( a^{(i)}_{M} \).
-                    <br><br>
+                    then generates a reasoning trace \( R^{(i)}_{M} \) and final answer \( a^{(i)}_{M} \).
+                  </li>
+                  <li>
                     <strong>Step 3 &mdash; Building training data</strong>:
-                      Finally, we construct the raw question-response pairs as
-                        \( \mathcal{D}_{\text{raw},M} = \big\{\,\big(q^{(i)},\; C^{(i)} \,\Vert\, R^{(i)}_{M} \,\Vert\, a^{(i)}_{M}\big)\,\big\}_{i=1}^{N}. \) <br>
-                        To ensure data quality, we retain only those instances where the model’s answer is correct. 
-                        The faithful training set is defined as
-                        \( \mathcal{D}_{M} = \big\{\,\big(q^{(i)},\; C^{(i)} \,\Vert\, R^{(i)}_{M} \,\Vert\, a^{(i)}_{M}\big) \;\big|\; i \in S_{M}^{\text{correct}} \,\big\}. \)
-                    <br>
+                    Finally, we construct the raw question-response pairs as
+                    \( \mathcal{D}_{\text{raw},M} = \big\{\,\big(q^{(i)},\; C^{(i)} \,\Vert\, R^{(i)}_{M} \,\Vert\, a^{(i)}_{M}\big)\,\big\}_{i=1}^{N}. \) <br>
+                    To ensure data quality, we retain only those instances where the model's answer is correct. 
+                    The faithful training set is defined as
+                    \( \mathcal{D}_{M} = \big\{\,\big(q^{(i)},\; C^{(i)} \,\Vert\, R^{(i)}_{M} \,\Vert\, a^{(i)}_{M}\big) \;\big|\; i \in S_{M}^{\text{correct}} \,\big\}. \)
+                  </li>
                 </ul>
                 <h3>Stage 2: Full-Parameter Fine-Tuning</h3>
-                
-                  Using the dataset \( \mathcal{D}_{M} \), now we can fine-tune each model \( M \) = <span class="code-font">{DeepSeek-Qwen3-8B, Nemotron-7B, and Qwen3-8B}</span>.
+                <ul class="bullets" style="padding-left: 2em;">
+                  <li>
+                    Using the dataset \( \mathcal{D}_{M} \), now we can fine-tune each model \( M \) = <span class="code-font">{DeepSeek-Qwen3-8B, Nemotron-7B, and Qwen3-8B}</span>.
+                  </li>
+                </ul>
           </div>
         </div>
       </div>
@@ -191,7 +203,7 @@
         </p>
 
         <h3>Comparison Models</h3>
-        <ol class="bullets">
+        <ol class="bullets" style="padding-left: 3em;">
           <li>
             <strong>Original (Baseline #1)</strong>. Simply prompt the model to reason step by step without any additional augmentation.<br>
             <span class="code-font">Prompt: Please reason step by step.</span>
@@ -207,39 +219,46 @@
         </ol>
 
         <h3>Evaluation</h3>
-        <p>
+        <p style="padding-left: 2em;">
           We evaluate on 4 benchmarks: <span class="code-font">AIME2024, AIME2025, MATH500, and GPQA</span>.
         </p>
 
         <h3>Results</h3>
-        <p>
-          FoCus achieves a better accuracy–faithfulness trade-off. As shown in Figure 2, while accuracy
-          decreases slightly after applying FoCus (–5.2%, –0.1%, –2.4% for <span class="code-font">DeepSeek-Qwen3-8B, Nemotron-7B, and Qwen3-8B</span> respectively), 
-          the averaged faithfulness increases substantially (+22.95%, +31.05%, +29.4% for <span class="code-font">DeepSeek-Qwen3-8B, Nemotron-7B, and Qwen3-8B</span> respectively). 
-          This demonstrates that FoCus effectively guides models to produce reasoning traces that more transparently disclose the conditions on which they rely.
-        </p>
-        
-        <img src="assets/faithfulness_result.png" alt="Accuracy-Faithfulness Trade-off" class="img-result">
-        <p class="img-caption">Figure 2: Accuracy–faithfulness trade-off across models and settings; FoCus yields higher faithfulness with slight accuracy loss.</p>
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+          <div style="flex: 1;">
+            <p style="padding-left: 2em;">
+              FoCus achieves a better accuracy–faithfulness trade-off. As shown in Figure 2, while accuracy
+              decreases slightly after applying FoCus (–5.2%, –0.1%, –2.4% for <span class="code-font">DeepSeek-Qwen3-8B, Nemotron-7B, and Qwen3-8B</span> respectively), 
+              the averaged faithfulness increases substantially (+22.95%, +31.05%, +29.4% for <span class="code-font">DeepSeek-Qwen3-8B, Nemotron-7B, and Qwen3-8B</span> respectively). 
+              This demonstrates that FoCus effectively guides models to produce reasoning traces that more transparently disclose the conditions on which they rely.
+            </p>
+          </div>
+          <div style="flex: 0 0 40%;">
+            <img src="assets/faithfulness_result.png" alt="Accuracy-Faithfulness Trade-off" class="img-result" style="width: 100%; max-width: 100%;">
+            <p class="img-caption">Figure 2: Accuracy–faithfulness trade-off across models and settings; FoCus yields higher faithfulness with slight accuracy loss.</p>
+          </div>
+        </div>
 
         <h3>Detailed Results</h3>
-        <p>
-          We provide detailed accuracy and two kinds of faithfulness results:
-        </p>
-        
-        <h4 style="margin-bottom: 8px;">1. Accuracy</h4>
-        <img src="assets/acc.png" alt="Detailed Accuracy Results" class="img" style="margin-top: 0; margin-bottom: 5px;">
-        <p class="img-caption" style="margin-top: 0;">Table 1: Accuracy across Normal, Baseline, and FoCus settings.</p>
+        <div style="padding-left: 2em;">
+          <p>
+            We provide detailed accuracy and two kinds of faithfulness results:
+          </p>
+          
+          <h4 style="margin-bottom: 8px;">1. Accuracy</h4>
+          <img src="assets/acc.png" alt="Detailed Accuracy Results" class="img" style="margin-top: 0; margin-bottom: 5px; width: 80%;">
+          <p class="img-caption" style="margin-top: 0;">Table 1: Accuracy across Normal, Baseline, and FoCus settings.</p>
 
-        <h4 style="margin-top: 20px; margin-bottom: 8px;">2. Sycophancy Hint Faithfulness</h4>
-        <img src="assets/syco_hint_faifulness.png" alt="Faithfulness Results Type 1" class="img" style="margin-top: 0; margin-bottom: 5px;">
-        <p class="img-caption" style="margin-top: 0;">Table 2: Faithfulness under sycophancy hints. Values are mean ± standard deviation. Best per
-          model-dataset is highlighted in bold.</p>
-        
-        <h4 style="margin-top: 20px; margin-bottom: 8px;">3. Unethical Hint Faithfulness</h4>
-        <img src="assets/unethi_hint_faithfulness.png" alt="Faithfulness Results Type 2" class="img" style="margin-top: 0; margin-bottom: 5px;">
-        <p class="img-caption" style="margin-top: 0;">Table 3: Faithfulness under unethical hints. Values are mean ± standard deviation. Best per model-
-          dataset is highlighted in bold.</p>
+          <h4 style="margin-top: 20px; margin-bottom: 8px;">2. Sycophancy Hint Faithfulness</h4>
+          <img src="assets/syco_hint_faifulness.png" alt="Faithfulness Results Type 1" class="img" style="margin-top: 0; margin-bottom: 5px; width: 80%;">
+          <p class="img-caption" style="margin-top: 0;">Table 2: Faithfulness under sycophancy hints. Values are mean ± standard deviation. Best per
+            model-dataset is highlighted in bold.</p>
+          
+          <h4 style="margin-top: 20px; margin-bottom: 8px;">3. Unethical Hint Faithfulness</h4>
+          <img src="assets/unethi_hint_faithfulness.png" alt="Faithfulness Results Type 2" class="img" style="margin-top: 0; margin-bottom: 5px; width: 80%;">
+          <p class="img-caption" style="margin-top: 0;">Table 3: Faithfulness under unethical hints. Values are mean ± standard deviation. Best per model-
+            dataset is highlighted in bold.</p>
+        </div>
       </div>
     </section>
 
@@ -262,7 +281,27 @@
       <div class="container">
         <h2>Related Works</h2>
         <br>
-            <span class="cite-number">[1]</span>
+            <span class="cite-number" id="ref1">[1]</span>
+            <a href="https://arxiv.org/abs/2201.11903" target="_blank" rel="noopener" style="color:rgb(80, 101, 193);">Wei et al. 
+            <em>Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.</em> </a>
+            &mdash; NeurIPS, 2022
+            <br><br>
+            <span class="cite-number" id="ref2">[2]</span>
+            <a href="https://aigi.ox.ac.uk/wp-content/uploads/2025/07/Cot_Is_Not_Explainability.pdf" target="_blank" rel="noopener" style="color:rgb(80, 101, 193);">Barez et al. 
+            <em>Chain-of-thought is not explainability.</em> </a>
+            &mdash; Preprint, 2025
+            <br><br>
+            <span class="cite-number" id="ref3">[3]</span>
+            <a href="https://arxiv.org/abs/2307.13702" target="_blank" rel="noopener" style="color:rgb(80, 101, 193);">Lanham et al. 
+            <em>Measuring Faithfulness in Chain-of-Thought Reasoning.</em> </a>
+            &mdash; arXiv, 2023
+            <br><br>
+            <span class="cite-number" id="ref4">[4]</span>
+            <a href="https://arxiv.org/abs/2305.04388" target="_blank" rel="noopener" style="color:rgb(80, 101, 193);">Turpin et al. 
+            <em>Language Models Don't Always Say What They Think: Unfaithful Explanations in Chain-of-Thought Prompting.</em> </a>
+            &mdash; NeurIPS, 2023
+            <br><br>
+            <span class="cite-number" id="ref5">[5]</span>
             <a href="https://arxiv.org/abs/2505.05410" target="_blank" rel="noopener" style="color:rgb(80, 101, 193);">Chen et al. 
             <em>Reasoning Models Don't Always Say What They Think.</em> </a>
             &mdash; arXiv, 2025
@@ -275,15 +314,14 @@
       <div class="container">
         <h2>Cite this work</h2>
         <pre class="bibtex">
-          @inproceedings{
-            lin2025focus,
-            title={FoCus: Improving Faithfulness in Chain-of-Thoughts by Training on Structured Reasoning Data},
-            author={Guan-Yi Lin and Chung-En Sun and Tsui-Wei Weng},
-            booktitle={The 5th Workshop on Mathematical Reasoning and AI at NeurIPS 2025},
-            year={2025},
-            url={https://openreview.net/forum?id=e9Do3KXkYA}
-            }
-        </pre>
+@inproceedings{
+lin2025focus,
+title={FoCus: Improving Faithfulness in Chain-of-Thoughts by Training on Structured Reasoning Data},
+author={Guan-Yi Lin and Chung-En Sun and Tsui-Wei Weng},
+booktitle={The 5th Workshop on Mathematical Reasoning and AI at NeurIPS 2025},
+year={2025},
+url={https://openreview.net/forum?id=e9Do3KXkYA}
+}</pre>
       </div>
     </section>
 
