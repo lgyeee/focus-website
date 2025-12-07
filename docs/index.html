@@ -44,16 +44,24 @@
       <div class="container">
         <h2>Abstract</h2>
         <p>
-          Chain-of-Thought (CoT) reasoning can improve interpretability and performance of LLMs; 
-          However, recent studies shows that it often <em>lacks faithfulness</em>, 
-          producing post-hoc rationalizations that misrepresent the model's actual reasoning process. 
-          This work introduce <strong>FoCus</strong>, a framework designed to improve faithfulness through two-stage methodology&mdash;generated a training dataset of faithful reasoning sequences, and<br>
-            <em>supervised fine-tuned LRMs</em> on it. <br>
-          Across four benchmarks and three models<span class="code-font">(Qwen3-8B, Nemotron-7B, and DeepSeek-Qwen3-8B)</span>,
-          FoCus improves the faithfulness score by 31.05% over two baselines&mdash;original and prompt-engineered models.
-          Focus produces a more structured CoT, which lists conditions first and grounds reasoning on them. 
-          This makes it more faithful while maintaining comparable accuracy.
+          Chain-of-Thought (CoT) reasoning often <em>lacks faithfulness</em>, producing post-hoc rationalizations that misrepresent the model's actual reasoning process.
         </p>
+        <p>
+          We introduce <strong>FoCus</strong>, a framework that employs <em>structured CoT</em> to improve faithfulness by explicitly listing conditions first and grounding reasoning on them.
+        </p>
+        <ul class="bullets" style="margin-left: 20px; padding-left: 20px; margin-top: 10px;">
+          <li style="margin-bottom: 10px;">
+            FoCus uses a two-stage method:
+            <ul class="bullets" style="margin-left: 25px; padding-left: 20px; margin-top: 8px;">
+              (1) Generate a training dataset of faithful reasoning sequences with structured conditions
+              <br>
+              (2) Supervised fine-tune LRMs on this dataset
+            </ul>
+          </li>
+          <li>
+            Results: Across four benchmarks and three models <span class="code-font">(Qwen3-8B, Nemotron-7B, and DeepSeek-Qwen3-8B)</span>, FoCus improves faithfulness score by 31.05% over two baselines (original model and prompt-engineered model) while maintaining comparable accuracy.
+          </li>
+        </ul>
         <img src="assets/focus.png" alt="FoCus Framework" class="img" style="margin-top: 20px;">
         <p class="img-caption">Figure 1: Overview of CoT differences between two baselines(original and prompt-engineered model) vs. FoCus.</p>
       </div>
